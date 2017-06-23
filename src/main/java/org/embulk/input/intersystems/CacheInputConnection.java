@@ -1,4 +1,4 @@
-package org.embulk.input.cache;
+package org.embulk.input.intersystems;
 
 import org.embulk.input.jdbc.JdbcInputConnection;
 

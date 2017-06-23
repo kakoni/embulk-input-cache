@@ -7,17 +7,17 @@ import java.util.Properties;
 
 import org.embulk.config.Config;
 import org.embulk.config.ConfigDefault;
-import org.embulk.input.cache.CacheInputConnection;
+import org.embulk.input.intersystems.CacheInputConnection;
 import org.embulk.input.jdbc.AbstractJdbcInputPlugin;
 import org.embulk.input.jdbc.JdbcInputConnection;
 
 import com.google.common.base.Optional;
 import static java.util.Locale.ENGLISH;
 
-public class CacheInputPlugin
+public class IntersystemsCacheInputPlugin
         extends AbstractJdbcInputPlugin
 {
-    public interface CachePluginTask
+    public interface IntersystemsCachePluginTask
             extends PluginTask
     {
         @Config("driver_path")
@@ -49,13 +49,13 @@ public class CacheInputPlugin
     @Override
     protected Class<? extends PluginTask> getTaskClass()
     {
-        return CachePluginTask.class;
+        return IntersystemsCachePluginTask.class;
     }
 
     @Override
     protected JdbcInputConnection newConnection(PluginTask task) throws SQLException
     {
-        CachePluginTask t = (CachePluginTask) task;
+        IntersystemsCachePluginTask t = (IntersystemsCachePluginTask) task;
 
         String url = String.format(ENGLISH, "jdbc:Cache://%s:%d/%s",
                 t.getHost(), t.getPort(), t.getNamespace());
