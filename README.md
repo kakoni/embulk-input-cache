@@ -14,7 +14,7 @@ Cache input plugin for Embulk loads records from Intersystems cache database.
 - **port**: database port number (integer, default: 1972)
 - **user**: database login user name (string, required)
 - **password**: database login password (string, default: "")
-- **namespace**: destination namespace name (string, default: use the default database)
+- **namespace**: destination namespace name (string, required)
 - **schema**: destination schema name (string, optional)
 - **url**: URL of the JDBC connection (string, optional)
 - If you write SQL directly,
@@ -26,7 +26,6 @@ Cache input plugin for Embulk loads records from Intersystems cache database.
   - **order_by**: expression of ORDER BY to sort rows (e.g. `created_at DESC, id ASC`) (string, default: not sorted)
 - **fetch_rows**: number of rows to fetch one time (used for java.sql.Statement#setFetchSize) (integer, default: 10000)
 - **connect_timeout**: timeout for the driver to connect. 0 means the default of SQL Server (15 by default). (integer (seconds), default: 300)
-- **application_name**: application name used to identify a connection in profiling and logging tools. (string, default: "embulk-input-sqlserver")
 - **socket_timeout**: timeout for executing the query. 0 means no timeout. (integer (seconds), default: 1800)
 - **options**: extra JDBC properties (hash, default: {})
 - **incremental**: if true, enables incremental loading. See next section for details (boolean, default: false)
@@ -85,49 +84,27 @@ Recommended usage is to leave `incremental_columns` unset and let this plugin au
 
 ```yaml
 in:
-  type: cache
+  type: intersystems_cache
   driver_path: /lib/cachejdbc.jar
   host: localhost
-  user: myuser
+  user: _system
   password: ""
-  namespace: SERVER
-  table: my_table
-  select: "col1, col2, col3"
-  where: "col4 != 'a'"
-  order_by: "col1 DESC"
+  namespace: SAMPLES
+  schema: Sample
+  table: Person
 ```
 
 This configuration will generate following SQL:
 
 ```
-SELECT col1, col2, col3
-FROM "my_table"
-WHERE col4 != 'a'
-ORDER BY col1 DESC
-```
-
-If you need a complex SQL,
-
-```yaml
-in:
-  type: cache
-  driver_path: /lib/cachejdbc.jar
-  host: localhost
-  user: myuser
-  password: ""
-  namespace: SERVER
-  query: |
-    SELECT t1.id, t1.name, t2.id AS t2_id, t2.name AS t2_name
-    FROM table1 AS t1
-    LEFT JOIN table2 AS t2
-      ON t1.id = t2.t1_id
+SELECT * FROM "Sample"."Person"
 ```
 
 Advanced configuration:
 
 ```yaml
 in:
-  type: cache
+  type: intersystems_cache
   driver_path: /lib/cachejdbc.jar
   host: localhost
   user: myuser
